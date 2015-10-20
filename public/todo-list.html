@@ -2,6 +2,13 @@
 <html>
     <head>
         <script type="text/javascript">
+        function save() {
+            var location = window.document.body.children[1].children[0].children[0];
+            var length = location.childElementCount;
+            var newRow = location.insertRow(length);
+            var newData = newRow.insertCell(0);
+            newData.innerHTML = location.children[0].children[0].children[0].value;
+        }
         </script>
     </head>
     <style>
@@ -12,19 +19,22 @@
     </style>
     <body>
         <div class="header">
-          <h1>
-            <p>todos</p>
+          <h1 style="color: grey">
+            todos
           </h1>
         </div>
         <div class="content">
-        <table style="width: 100%"> 
-          <tr style="color: grey">
+        <table style="width">
+          <tbody>
+          <tr>
             <td>
             <input type="text" name="task" placeholder="What needs to do?">
+            <input type="submit" name="submit" value="Save" onclick="save();">
             </td>
           </tr>
           <tr><td>Hello</td></tr>
           <tr><td>World</td></tr>
+          <tbody>
         </table>
         </div>
     </body>
