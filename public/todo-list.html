@@ -2,12 +2,19 @@
 <html>
     <head>
         <script type="text/javascript">
-        function save() {
-            var location = window.document.body.children[1].children[0].children[0];
+        window.onload = function() {
+            document.getElementById("userInput").onkeydown = save;
+        }
+
+        function save(click) {
+            if (click.keyCode == 13){
+            var location = document.getElementById("tableOne");
             var length = location.childElementCount;
             var newRow = location.insertRow(length);
             var newData = newRow.insertCell(0);
-            newData.innerHTML = location.children[0].children[0].children[0].value;
+            newData.innerHTML = document.getElementById("userInput").value;
+            document.getElementById("userInput").value = " ";
+            }
         }
         </script>
     </head>
@@ -25,11 +32,10 @@
         </div>
         <div class="content">
         <table style="width">
-          <tbody>
+          <tbody id="tableOne">
           <tr>
             <td>
-            <input type="text" name="task" placeholder="What needs to do?">
-            <input type="submit" name="submit" value="Save" onclick="save();">
+            <input id="userInput" type="text" name="task" placeholder="What needs to do?">
             </td>
           </tr>
           <tr><td>Hello</td></tr>
