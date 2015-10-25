@@ -8,12 +8,34 @@
 
         function save(click) {
             if (click.keyCode == 13){
-            var location = document.getElementById("tableOne");
-            var length = location.childElementCount;
-            var newRow = location.insertRow(length);
-            var newData = newRow.insertCell(0);
-            newData.innerHTML = document.getElementById("userInput").value;
-            document.getElementById("userInput").value = " ";
+                var location = document.getElementById("tableOne");
+                var length = location.childElementCount;
+                var newTr = document.getElementById("template").cloneNode(true);
+                location.appendChild(newTr);
+                newTr.children[0].children[1].innerHTML = 
+                    document.getElementById("userInput").value;
+                document.getElementById("userInput").value = " ";
+                newTr.style.display = '';
+                newTr.id = "newTr" + length;
+                var some_func = toggledelete.bind(newTr);
+                newTr.children[0].children[0].onchange = some_func;
+            }
+        }
+        function toggledelete(event) {
+            if(this.children[0].children[0].checked) {
+                var del = document.createElement("del");
+                del.innerHTML = this.children[0].children[1].innerHTML;
+                this.children[0].removeChild(this.children[0].children[1]);
+                this.children[0].appendChild(del);
+            }
+            else {
+                var getback = this.children[0].children[1].innerHTML
+                var newdiv = document.createElement("div")
+                newdiv.innerHTML = getback
+                newdiv.style.display = 'inline-block'
+                this.children[0].removeChild(this.children[0].children[1]);
+                this.children[0].appendChild(newdiv);
+
             }
         }
         </script>
@@ -31,15 +53,21 @@
           </h1>
         </div>
         <div class="content">
-        <table style="width">
+        <table >
           <tbody id="tableOne">
           <tr>
             <td>
-            <input id="userInput" type="text" name="task" placeholder="What needs to do?">
+              <input id="userInput" type="text" name="task" placeholder="What needs to do?">
             </td>
           </tr>
-          <tr><td>Hello</td></tr>
-          <tr><td>World</td></tr>
+          <tr><td><input type="checkbox" >Hello</td></tr>
+          <tr><td><input type="checkbox" >World</td></tr>
+          <tr id="template" style="display:none">
+            <td>
+              <input style="display: inline-block" type="checkbox" >
+              <div style="display: inline-block">template</div>
+            </td>
+          </tr>
           <tbody>
         </table>
         </div>
