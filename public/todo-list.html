@@ -17,26 +17,27 @@
                 document.getElementById("userInput").value = " ";
                 newTr.style.display = '';
                 newTr.id = "newTr" + length;
-                var some_func = toggledelete.bind(newTr);
-                newTr.children[0].children[0].onchange = some_func;
+                var toggle_delete = toggledelete.bind(newTr);
+                newTr.children[0].children[0].onchange = toggle_delete;
+                var newTr_delete = newTrdelete.bind(newTr)
+                newTr.children[0].children[2].onclick = newTr_delete;
             }
         }
         function toggledelete(event) {
-            if(this.children[0].children[0].checked) {
+            var td_checkbox = this.children[0].children[0]
+            var td_div = this.children[0].children[1]
+            if(td_checkbox.checked) {
                 var del = document.createElement("del");
-                del.innerHTML = this.children[0].children[1].innerHTML;
-                this.children[0].removeChild(this.children[0].children[1]);
-                this.children[0].appendChild(del);
+                del.innerHTML = td_div.innerHTML;
+                td_div.innerHTML = del.outerHTML;
             }
             else {
-                var getback = this.children[0].children[1].innerHTML
-                var newdiv = document.createElement("div")
-                newdiv.innerHTML = getback
-                newdiv.style.display = 'inline-block'
-                this.children[0].removeChild(this.children[0].children[1]);
-                this.children[0].appendChild(newdiv);
-
+                var getback = td_div.children[0].innerHTML
+                td_div.innerHTML = getback
             }
+        }
+        function newTrdelete(event) {
+            this.parentNode.removeChild(this)
         }
         </script>
     </head>
@@ -48,27 +49,40 @@
     </style>
     <body>
         <div class="header">
-          <h1 style="color: grey">
-            todos
-          </h1>
+            <h1 style="color: grey">
+                todos
+            </h1>
         </div>
         <div class="content">
         <table >
-          <tbody id="tableOne">
-          <tr>
-            <td>
-              <input id="userInput" type="text" name="task" placeholder="What needs to do?">
-            </td>
-          </tr>
-          <tr><td><input type="checkbox" >Hello</td></tr>
-          <tr><td><input type="checkbox" >World</td></tr>
-          <tr id="template" style="display:none">
-            <td>
-              <input style="display: inline-block" type="checkbox" >
-              <div style="display: inline-block">template</div>
-            </td>
-          </tr>
-          <tbody>
+            <tbody id="tableOne">
+            <tr>
+                <td>
+                    <input id="userInput" type="text" name="task" placeholder="What needs to do?">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" >Hello
+                    <input style="float: right" type="button" name="delete" value="Delete">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="checkbox" >World
+                    <input style="float: right" type="button" name="delete" value="Delete">
+                </td>
+            </tr>
+            <tr id="template" style="display:none">
+                <td>
+                    <input style="display: inline-block" type="checkbox" >
+                    <div style="display: inline-block">
+                        template
+                    </div>
+                    <input style="float: right" type="button" name="delete" value="Delete">
+                </td>
+            </tr>
+            <tbody>
         </table>
         </div>
     </body>
