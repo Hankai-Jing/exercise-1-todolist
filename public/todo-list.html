@@ -4,11 +4,19 @@
         <script type="text/javascript">
         window.onload = function() {
             document.getElementById("userInput").onkeydown = save;
-        }
+            /*var taskActive = displayActive.bind(document.getElementById("tableBody"))
+            document.getElementById("active").onclick = taskActive
+            var taskCompleted = displayCompleted.bind(document.getElementById("tableBody"))
+            document.getElementById("completed").onclick = taskCompleted
+            var taskAll = displayAll.bind(document.getElementById("tableBody"))
+            document.getElementById("all").onclick = taskAll*/
 
-        function save(click) {
+            var tbody = document.getElementById("tableBody");
+            todolist = new Todolist(tbody)
+        }            
+        function save (click) {
             if (click.keyCode == 13){
-                var location = document.getElementById("tableOne");
+                var location = document.getElementById("tableBody");
                 var length = location.childElementCount;
                 var newTr = document.getElementById("template").cloneNode(true);
                 location.appendChild(newTr);
@@ -17,28 +25,73 @@
                 document.getElementById("userInput").value = " ";
                 newTr.style.display = '';
                 newTr.id = "newTr" + length;
-                var toggle_delete = toggledelete.bind(newTr);
-                newTr.children[0].children[0].onchange = toggle_delete;
-                var newTr_delete = newTrdelete.bind(newTr)
-                newTr.children[0].children[2].onclick = newTr_delete;
+
+                var item = new TodolistItem(newTr);
+                todolist.items.push(item)
             }
         }
-        function toggledelete(event) {
-            var td_checkbox = this.children[0].children[0]
-            var td_div = this.children[0].children[1]
-            if(td_checkbox.checked) {
-                var del = document.createElement("del");
-                del.innerHTML = td_div.innerHTML;
-                td_div.innerHTML = del.outerHTML;
-            }
-            else {
-                var getback = td_div.children[0].innerHTML
-                td_div.innerHTML = getback
-            }
+
+        function TodolistItem(newTr){
+            this.newTr = newTr
+            newTr.children[0].children[0].onchange = this.toggleDelete.bind(this);
+            newTr.children[0].children[2].onclick = this.newTrDelete.bind(this);
         }
-        function newTrdelete(event) {
-            this.parentNode.removeChild(this)
+        TodolistItem.prototype = {
+            toggleDelete: function (event) {
+                var td_checkbox = this.newTr.children[0].children[0]
+                var td_div = this.newTr.children[0].children[1]
+                if(td_checkbox.checked) {
+                    var del = document.createElement("del");
+                    del.innerHTML = td_div.innerHTML;
+                    td_div.innerHTML = del.outerHTML;
+                    this.newTr.className = "completed"
+                }
+                else {
+                    var getback = td_div.children[0].innerHTML
+                    td_div.innerHTML = getback
+                    this.newTr.className = "active"
+                }
+            },
+
+            newTrDelete: function (event) {
+                this.newTr.parentNode.removeChild(this.newTr)
+            }            
         }
+        function Todolist(tbody) {
+            this.items = []
+            this.body = tbody
+            document.getElementById("active").onclick = this.displayActive.bind(this)
+            document.getElementById("completed").onclick = this.displayCompleted.bind(this)
+            document.getElementById("all").onclick = this.displayAll.bind(this)
+        }
+        Todolist.prototype = {
+            displayActive: function(event) {
+                for(var i = 1; i < this.body.childElementCount; i++) {
+                    var child = this.body.children[i]
+                    if(child.className == "completed") {
+                        child.style.display = "none"
+                    }else {
+                        child.style.display = ''
+                    }
+                }            
+            },
+            displayCompleted: function(event) {
+                for(var i = 1; i < this.body.childElementCount; i++) {
+                    var child = this.body.children[i]
+                    if(child.className == "active") {
+                        child.style.display = "none"
+                    }else {
+                        child.style.display = ''
+                    }
+                }
+            },
+            displayAll: function(event) {
+                for(var i = 1; i < this.body.childElementCount; i++) {
+                    var child = this.body.children[i]
+                    child.style.display = ''
+                }
+            }
+        }        
         </script>
     </head>
     <style>
@@ -54,36 +107,23 @@
             </h1>
         </div>
         <div class="content">
-        <table >
-            <tbody id="tableOne">
-            <tr>
-                <td>
-                    <input id="userInput" type="text" name="task" placeholder="What needs to do?">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" >Hello
-                    <input style="float: right" type="button" name="delete" value="Delete">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="checkbox" >World
-                    <input style="float: right" type="button" name="delete" value="Delete">
-                </td>
-            </tr>
-            <tr id="template" style="display:none">
-                <td>
-                    <input style="display: inline-block" type="checkbox" >
-                    <div style="display: inline-block">
-                        template
-                    </div>
-                    <input style="float: right" type="button" name="delete" value="Delete">
-                </td>
-            </tr>
-            <tbody>
-        </table>
+            <input id="userInput" type="text" name="task" placeholder="What needs to do?">
+            <table >
+                <tbody id="tableBody">
+                    <tr class="active" id="template" style="display:none">
+                        <td>
+                            <input style="display: inline-block" type="checkbox" >
+                            <div style="display: inline-block">
+                                template
+                            </div>
+                            <input style="float: right" type="button" name="delete" value="Delete">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        <button id="all" type="button" >All</button>
+        <button id="active" type="button" >Active</button>
+        <button id="completed" type="button" >Completed</button>
         </div>
     </body>
 </html>
