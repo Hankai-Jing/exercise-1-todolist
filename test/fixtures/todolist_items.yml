@@ -5,15 +5,18 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
+    id: 1
     content: "Hello"
 
 # column: value
 #
 two:
+    id: 2
     content: "World"
     completed: true
 #  column: value
 
 removed:
+    id: 3
     content: "Removed"
     removed: true
