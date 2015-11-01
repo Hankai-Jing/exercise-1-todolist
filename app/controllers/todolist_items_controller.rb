@@ -8,14 +8,20 @@ class TodolistItemsController < ApplicationController
     end
 
     def update
-        @todolist_item.update!(todolist_item_params)
         respond_to do |format|
-            format.json { render :show, location: @todolist_item }
+            if @todolist_item.update(todolist_item_params)
+                format.json { render :show, status: :ok, json: @todolist_item }
+            else
+                format.json { render json: @todolist_item.errors, status: :unprocessable_entit }
+            end
         end
     end
 
     def destroy
         @todolist_item.destroy!
+        respond_to do |format|
+            format.json { head :no_content }
+        end
     end
 
     def create
