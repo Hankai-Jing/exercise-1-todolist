@@ -1,6 +1,10 @@
 class TodolistItemsController < ApplicationController
     before_action :set_todolist_item, only: [:show, :update, :destroy]
 
+    def index
+        @todolist_items = TodolistItem.all
+    end
+
     def show
         respond_to do |format|
             format.json { render json: @todolist_item }

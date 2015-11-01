@@ -4,6 +4,16 @@ class TodolistItemsControllerTest < ActionController::TestCase
   # test "the truth" do
   #   assert true
   # end
+  test "index should succeed" do
+    get(:index, format: :json)
+    assert_response :success
+    json_body = JSON.parse(response.body)
+    assert_equal 3, json_body.size
+    assert_equal 1, json_body[0]["id"]
+    assert_equal 2, json_body[1]["id"]
+    assert_equal 3, json_body[2]["id"]
+  end
+
   test "show should succeed" do
     get(:show, id: "1", format: :json)
     assert_response :success
