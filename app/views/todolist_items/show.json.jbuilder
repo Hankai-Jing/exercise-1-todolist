@@ -1,1 +1,1 @@
-json.extract! @todolist_items, :id, :content, :completed, :removed
+json.extract! @todolist_items
