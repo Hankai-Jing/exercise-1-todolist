@@ -24,7 +24,7 @@ class TodolistItemsControllerTest < ActionController::TestCase
   end
 
   test "create should succeed" do
-    get(:create, todolist_item: { content: "random content" }, format: :json)
+    post(:create, todolist_item: { content: "random content" }, format: :json)
     assert_response :success
     json_body = JSON.parse(response.body)
     assert_not_nil json_body["id"]
