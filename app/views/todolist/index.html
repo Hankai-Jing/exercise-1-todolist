@@ -13,6 +13,22 @@
 
             var tbody = document.getElementById("tableBody");
             todolist = new Todolist(tbody)
+            $.get(
+                'todolist_items',
+                {},
+                function(response) {
+                    var tablebody = document.getElementById("tableBody")
+                    for(var i = 0; i < response.length; i++) {
+                        var newTr = document.getElementById("template").cloneNode(true)
+                        tablebody.appendChild(newTr)
+                        newTr.children[0].children[1].innerHTML = 
+                        response[i].content
+                        newTr.style.display = ''
+                        newTr.id = "newTr" + i
+                    }
+                },
+                "json"
+                )
         }            
         function save (click) {
             if (click.keyCode == 13){
@@ -22,12 +38,26 @@
                 location.appendChild(newTr);
                 newTr.children[0].children[1].innerHTML = 
                     document.getElementById("userInput").value;
-                document.getElementById("userInput").value = " ";
+                document.getElementById("userInput").value = "";
                 newTr.style.display = '';
                 newTr.id = "newTr" + length;
 
                 var item = new TodolistItem(newTr);
                 todolist.items.push(item)
+
+                $.post(
+                    'todolist_items',
+                    {
+                        todolist_item: {
+                            content: document.getElementById("userInput").value,
+                            completed: false
+                        }
+                    },
+                    function(response) {
+                        alert('Todolist item created!')
+                    },
+                    "json"
+                )
             }
         }
 
