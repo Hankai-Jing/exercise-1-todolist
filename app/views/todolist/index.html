@@ -25,6 +25,12 @@
                         response[i].content
                         newTr.style.display = ''
                         newTr.id = "newTr" + i
+                        var todolistItem = new TodolistItem(newTr,response[i].id)
+                        todolist.items.push(todolistItem)
+                        if(response[i].completed) {
+                            newTr.children[0].children[0].checked = true
+                            todolistItem.toggleDelete()
+                        }
                     }
                 },
                 "json"
@@ -42,26 +48,25 @@
                 newTr.style.display = '';
                 newTr.id = "newTr" + length;
 
-                var item = new TodolistItem(newTr);
-                todolist.items.push(item)
-
                 $.post(
                     'todolist_items',
                     {
                         todolist_item: {
-                            content: document.getElementById("userInput").value,
+                            content: newTr.children[0].children[1].innerHTML,
                             completed: false
                         }
                     },
                     function(response) {
-                        alert('Todolist item created!')
+                        var item = new TodolistItem(newTr, response.id)
+                        todolist.items.push(item)
                     },
                     "json"
                 )
             }
         }
 
-        function TodolistItem(newTr){
+        function TodolistItem(newTr, id){
+            this.id = id
             this.newTr = newTr
             newTr.children[0].children[0].onchange = this.toggleDelete.bind(this);
             newTr.children[0].children[2].onclick = this.newTrDelete.bind(this);
@@ -75,16 +80,37 @@
                     del.innerHTML = td_div.innerHTML;
                     td_div.innerHTML = del.outerHTML;
                     this.newTr.className = "completed"
+                    var completed = true                  
                 }
                 else {
                     var getback = td_div.children[0].innerHTML
                     td_div.innerHTML = getback
                     this.newTr.className = "active"
+                    var completed = false
                 }
+                $.ajax({
+                    url: 'todolist_items/' + this.id,
+                    type: 'PUT',
+                    data: {
+                        todolist_item: {
+                            completed: completed
+                        }
+                    },
+                    success: function(response) {},
+                    dataType: "json"
+                })
             },
 
             newTrDelete: function (event) {
                 this.newTr.parentNode.removeChild(this.newTr)
+                $.ajax({
+                    url: 'todolist_items/' + this.id,
+                    type: 'DELETE',
+                    success: function(response) {
+                        alert('Task deleted!')
+                    },
+                    dataType: "json"
+                })
             }            
         }
         function Todolist(tbody) {
