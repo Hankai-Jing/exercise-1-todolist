@@ -30,7 +30,8 @@
                     },
                     function(response) {
                         new TodolistItem(response)
-                        $('#userInput').value = ''
+                        console.log($('#userInput'))
+                        $('#userInput')[0].value = ''
                     },
                     "json"
                 )
