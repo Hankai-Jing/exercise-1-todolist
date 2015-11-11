@@ -12,26 +12,12 @@
                 {},
                 function(response) {
                     for(var i = 0; i < response.length; i++) {
-                        createNewItem(response[i])
+                        new TodolistItem(response[i])
                     }
                 },
                 "json"
             )
-        } 
-        var createNewItem = function(newItem) {
-            var newTr = $('#template')[0].cloneNode(true)
-            var tbody = $('#tableBody')[0]
-            tbody.appendChild(newTr)
-            $(newTr).find('div')[0].innerHTML = newItem.content
-            newTr.style.display = ''
-            newTr.id = "newTr" + newItem.id
-            var todolistItem = new TodolistItem(newTr, newItem.id)
-            todolist.items.push(todolistItem)
-            if(newItem.completed) {
-                $(newTr).find('#checkBox')[0].checked = true
-                todolistItem.toggleDelete()
-            }
-        }           
+        }            
         function save (click) {
             if (click.keyCode == 13){
                 $.post(
@@ -43,7 +29,7 @@
                         }
                     },
                     function(response) {
-                        createNewItem(response)
+                        new TodolistItem(response)
                         $('#userInput').value = ''
                     },
                     "json"
@@ -51,13 +37,28 @@
             }
         }
 
-        function TodolistItem(newTr, id){
-            this.id = id
-            this.newTr = newTr
-            newTr.children[0].children[0].onchange = this.toggleDelete.bind(this);
-            newTr.children[0].children[2].onclick = this.newTrDelete.bind(this);
+        function TodolistItem(newItem){
+            this.id = newItem.id
+            this.newTr = this.createNewTr(newItem)
+            this.newTr.children[0].children[0].onchange = this.toggleDelete.bind(this);
+            this.newTr.children[0].children[2].onclick = this.newTrDelete.bind(this);
+            todolist.items.push(this)
+            if(newItem.completed) {
+                    $(this.newTr).find('#checkBox')[0].checked = true
+                    this.toggleDelete()
+            }
         }
         TodolistItem.prototype = {
+            createNewTr: function(newItem) {
+                var newTr = $('#template')[0].cloneNode(true)
+                var tbody = $('#tableBody')[0]
+                tbody.appendChild(newTr)
+                $(newTr).find('div')[0].innerHTML = newItem.content
+                newTr.style.display = ''
+                newTr.id = "newTr" + newItem.id
+
+                return newTr
+            },
             toggleDelete: function (event) {
                 var td_checkbox = this.newTr.children[0].children[0]
                 var td_div = this.newTr.children[0].children[1]
