@@ -3,9 +3,9 @@
     <head>
         <script type="text/javascript">
         window.onload = function() {
-            document.getElementById("userInput").onkeydown = save;
+            $('#userInput').keydown(save)
 
-            var tbody = document.getElementById("tableBody");
+            var tbody = $('#tableBody')[0]
             todolist = new Todolist(tbody)
             $.get(
                 'todolist_items',
@@ -30,7 +30,6 @@
                     },
                     function(response) {
                         new TodolistItem(response)
-                        console.log($('#userInput'))
                         $('#userInput')[0].value = ''
                     },
                     "json"
@@ -41,8 +40,8 @@
         function TodolistItem(newItem){
             this.id = newItem.id
             this.newTr = this.createNewTr(newItem)
-            this.newTr.children[0].children[0].onchange = this.toggleDelete.bind(this);
-            this.newTr.children[0].children[2].onclick = this.newTrDelete.bind(this);
+            $(this.newTr).find('#checkBox')[0].onchange = this.toggleDelete.bind(this);
+            $(this.newTr).find('#delete')[0].onclick = this.newTrDelete.bind(this);
             todolist.items.push(this)
             if(newItem.completed) {
                     $(this.newTr).find('#checkBox')[0].checked = true
@@ -61,10 +60,10 @@
                 return newTr
             },
             toggleDelete: function (event) {
-                var td_checkbox = this.newTr.children[0].children[0]
-                var td_div = this.newTr.children[0].children[1]
+                var td_checkbox = $(this.newTr).find('#checkBox')[0]     
+                var td_div = $(this.newTr).find('div')[0]
                 if(td_checkbox.checked) {
-                    var del = document.createElement("del");
+                    var del = $('<del></del>')[0]
                     del.innerHTML = td_div.innerHTML;
                     td_div.innerHTML = del.outerHTML;
                     this.newTr.className = "completed"
@@ -90,7 +89,7 @@
             },
 
             newTrDelete: function (event) {
-                this.newTr.parentNode.removeChild(this.newTr)
+                $(this.newTr).remove()
                 $.ajax({
                     url: 'todolist_items/' + this.id,
                     type: 'DELETE',
@@ -104,9 +103,9 @@
         function Todolist(tbody) {
             this.items = []
             this.body = tbody
-            document.getElementById("active").onclick = this.displayActive.bind(this)
-            document.getElementById("completed").onclick = this.displayCompleted.bind(this)
-            document.getElementById("all").onclick = this.displayAll.bind(this)
+            $("#active")[0].onclick = this.displayActive.bind(this)
+            $("#completed")[0].onclick = this.displayCompleted.bind(this)
+            $("#all")[0].onclick = this.displayAll.bind(this)
         }
         Todolist.prototype = {
             displayActive: function(event) {
@@ -160,7 +159,7 @@
                             <div style="display: inline-block">
                                 template
                             </div>
-                            <input style="float: right" type="button" name="delete" value="Delete">
+                            <input style="float: right" type="button" id="delete" value="Delete">
                         </td>
                     </tr>
                 </tbody>
