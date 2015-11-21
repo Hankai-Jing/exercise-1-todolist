@@ -5,8 +5,7 @@
         window.onload = function() {
             $('#userInput').keydown(save)
 
-            var tbody = $('#tableBody')[0]
-            todolist = new Todolist(tbody)
+            todolist = new Todolist()
             $.get(
                 'todolist_items',
                 {},
@@ -100,9 +99,9 @@
                 })
             }            
         }
-        function Todolist(tbody) {
+        function Todolist() {
             this.items = []
-            this.body = tbody
+            this.body = $('#tableBody')[0]
             $("#active_button").click(this.displayActive.bind(this))
             $("#completed_button").click(this.displayCompleted.bind(this))
             $("#all_button").click(this.displayAll.bind(this))
