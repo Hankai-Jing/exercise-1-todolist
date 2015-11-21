@@ -24,13 +24,13 @@
                     'todolist_items',
                     {
                         todolist_item: {
-                            content: $('#userInput')[0].value,
+                            content: $('#userInput').val(),
                             completed: false
                         }
                     },
                     function(response) {
                         new TodolistItem(response)
-                        $('#userInput')[0].value = ''
+                        $('#userInput').val('')
                     },
                     "json"
                 )
@@ -40,39 +40,39 @@
         function TodolistItem(newItem){
             this.id = newItem.id
             this.newTr = this.createNewTr(newItem)
-            $(this.newTr).find('#checkBox')[0].onchange = this.toggleDelete.bind(this);
-            $(this.newTr).find('#delete')[0].onclick = this.newTrDelete.bind(this);
+            $(this.newTr).find('#checkBox').change(this.toggleDelete.bind(this))
+            $(this.newTr).find('#delete').click(this.newTrDelete.bind(this))
             todolist.items.push(this)
             if(newItem.completed) {
-                    $(this.newTr).find('#checkBox')[0].checked = true
+                    $(this.newTr).find('#checkBox').prop('checked', true)
                     this.toggleDelete()
             }
         }
         TodolistItem.prototype = {
             createNewTr: function(newItem) {
-                var newTr = $('#template')[0].cloneNode(true)
-                var tbody = $('#tableBody')[0]
-                tbody.appendChild(newTr)
-                $(newTr).find('div')[0].innerHTML = newItem.content
-                newTr.style.display = ''
+                var newTr = $('#template').clone()
+                var tbody = $('#tableBody')
+                tbody.append(newTr)
+                $(newTr).find('div').html(newItem.content)
+                newTr.show()
                 newTr.id = "newTr" + newItem.id
 
                 return newTr
             },
             toggleDelete: function (event) {
-                var td_checkbox = $(this.newTr).find('#checkBox')[0]     
-                var td_div = $(this.newTr).find('div')[0]
-                if(td_checkbox.checked) {
-                    var del = $('<del></del>')[0]
-                    del.innerHTML = td_div.innerHTML;
-                    td_div.innerHTML = del.outerHTML;
-                    this.newTr.className = "completed"
+                var td_checkbox = $(this.newTr).find('#checkBox')  
+                var td_div = $(this.newTr).find('div')
+                if (td_checkbox.prop('checked')) {
+                    var del = $('<del></del>')
+                    del.html(td_div.html())
+                    td_div.empty().append(del)
+                    this.newTr.removeClass('active').addClass('completed')
                     var completed = true                  
                 }
                 else {
-                    var getback = td_div.children[0].innerHTML
-                    td_div.innerHTML = getback
-                    this.newTr.className = "active"
+                    var getback = td_div.children(0).html()
+                    td_div.html(getback) 
+                    this.newTr.removeClass('completed').addClass('active')
                     var completed = false
                 }
                 $.ajax({
@@ -103,9 +103,9 @@
         function Todolist(tbody) {
             this.items = []
             this.body = tbody
-            $("#active")[0].onclick = this.displayActive.bind(this)
-            $("#completed")[0].onclick = this.displayCompleted.bind(this)
-            $("#all")[0].onclick = this.displayAll.bind(this)
+            $("#active_button").click(this.displayActive.bind(this))
+            $("#completed_button").click(this.displayCompleted.bind(this))
+            $("#all_button").click(this.displayAll.bind(this))
         }
         Todolist.prototype = {
             displayActive: function(event) {
@@ -164,9 +164,9 @@
                     </tr>
                 </tbody>
             </table>
-        <button id="all" type="button" >All</button>
-        <button id="active" type="button" >Active</button>
-        <button id="completed" type="button" >Completed</button>
+        <button id="all_button" >All</button>
+        <button id="active_button" >Active</button>
+        <button id="completed_button" >Completed</button>
         </div>
     </body>
 </html>
