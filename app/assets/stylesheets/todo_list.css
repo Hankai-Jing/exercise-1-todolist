@@ -1,0 +1,16 @@
+table,th,td {
+    border-collapse: collapse;
+    border: 1px solid grey;
+}
+h1 {
+    color:grey;
+}
+#template {
+    display:none;
+}
+#checkBox, #input {
+    display: inline-block;
+}
+#delete {
+    float: right;
+}
